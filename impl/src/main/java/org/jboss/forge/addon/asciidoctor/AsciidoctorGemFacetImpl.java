@@ -24,7 +24,8 @@ import org.jboss.forge.addon.resource.ResourceFacet;
  * 
  */
 @FacetConstraints({
-         @FacetConstraint(MavenPluginFacet.class)
+         @FacetConstraint(MavenPluginFacet.class),
+         @FacetConstraint(DependencyFacet.class)
 })
 public class AsciidoctorGemFacetImpl extends AbstractAsciidoctorFacet implements AsciidoctorGemFacet
 {
