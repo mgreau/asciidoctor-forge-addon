@@ -20,10 +20,16 @@
       <classifier>forge-addon</classifier>
     </dependency>
     <dependency>
+      <groupId>org.jboss.forge.addon</groupId>
+      <artifactId>projects</artifactId>
+      <classifier>forge-addon</classifier>
+    </dependency>
+    <dependency>
       <groupId>org.jboss.forge.furnace.container</groupId>
       <artifactId>cdi</artifactId>
       <classifier>forge-addon</classifier>
     </dependency>
+    
     <dependency>
       <groupId>org.jboss.forge.addon.asciidoctor</groupId>
       <artifactId>asciidoctor-forge-addon-spi</artifactId>
