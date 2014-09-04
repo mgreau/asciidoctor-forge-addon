@@ -57,8 +57,13 @@ public class AsciidoctorSetupConfigurationStep extends AbstractAsciidoctorComman
       Converter converter = (Converter) uiContext.getAttributeMap().get(Converter.class);
       Boolean useAsciidoctorDiagram = (Boolean) uiContext.getAttributeMap().get("useAsciidoctorDiagram");
       String execId = mavenExecutionId.getValue();
+      
+      //Manage attributes
+      converter.setAttribute(sourceHighlighter.getName(), sourceHighlighter.getValue());
+      converter.setAttribute(toc.getName(), toc.getValue());
+      
       converterOperations.setup(execId, project, converter, useAsciidoctorDiagram);
-      return Results.success("Converter "+ converter.getName()  + " is configured (gem -> " + useAsciidoctorDiagram + ".");
+      return Results.success("Converter "+ converter.getName()  + " is configured (gem -> " + useAsciidoctorDiagram + ").");
 
    }
 

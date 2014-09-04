@@ -1,14 +1,9 @@
 package org.jboss.forge.addon.asciidoctor.converters;
 
-import java.util.HashMap;
-import java.util.Map;
 
-import org.jboss.forge.addon.asciidoctor.Converter;
-
-public class DocBookConverter implements Converter
+public class DocBookConverter extends AbstractConverter
 {
-   final Map<String, String> attributes = new HashMap<>();
-   
+  
    public DocBookConverter(){
       attributes.put("doctype", "book");
    }
@@ -31,10 +26,5 @@ public class DocBookConverter implements Converter
       return "generate-docbook";
    }
 
-   @Override
-   public Map<String, String> getAttributes()
-   {
-      return attributes;
-   }
 
 }

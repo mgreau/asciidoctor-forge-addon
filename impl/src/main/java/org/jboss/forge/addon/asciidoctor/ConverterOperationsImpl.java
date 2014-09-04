@@ -25,7 +25,7 @@ public class ConverterOperationsImpl implements ConverterOperations
 {
    @Inject
    private FacetFactory facetFactory;
-   
+
    @Override
    public boolean setup(String execId, Project project, Converter converter, boolean isGemMandatory)
    {
@@ -43,7 +43,10 @@ public class ConverterOperationsImpl implements ConverterOperations
 
             for (Map.Entry<String, String> attr : converter.getAttributes().entrySet())
             {
-            	attrs = attrs.addChild(attr.getKey()).setText(attr.getValue());
+               if (attr.getValue() != null)
+               {
+                  attrs.addChild(attr.getKey()).setText(attr.getValue());
+               }
             }
             ExecutionBuilder execution = ExecutionBuilder.create()
                      .setId(execId != null ? execId : converter.getId())
@@ -58,8 +61,8 @@ public class ConverterOperationsImpl implements ConverterOperations
             // Manage GEM DEPS
             if (isGemMandatory)
             {
-                Iterable<AsciidoctorGemFacet> facets = facetFactory.createFacets(project,
-                		AsciidoctorGemFacet.class);
+               Iterable<AsciidoctorGemFacet> facets = facetFactory.createFacets(project,
+                        AsciidoctorGemFacet.class);
                for (AsciidoctorGemFacet metaModelFacet : facets)
                {
                   if (facetFactory.install(project, metaModelFacet))
