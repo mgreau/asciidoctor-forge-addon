@@ -58,10 +58,10 @@ public class AsciidoctorSetupWizardImpl extends AbstractAsciidoctorCommand imple
 
    @Inject
    private Imported<AsciidoctorFacet> asciidoctorFacet;
-   
+
    @Inject
    private Imported<AsciidoctorGemFacet> asciidoctorGemFacet;
-   
+
    @Inject
    private HTML5Converter defaultConverter;
 
@@ -98,18 +98,13 @@ public class AsciidoctorSetupWizardImpl extends AbstractAsciidoctorCommand imple
       AsciidoctorFacet facet = asciidoctorFacet.get();
       if (facetFactory.install(project, facet))
       {
-         // ResourceFact bug
-         if (project.hasFacet(ResourcesFacet.class))
-         {
-            createAsciiDocFile(context);
-         }
-         
+         createAsciiDocFile(context);
          return Results.success("Asciidoctor setup SUCCESS.");
       }
 
       return Results.fail("Could not install Asciidoctor.");
    }
-   
+
    private void initConverters()
    {
       converter.setItemLabelConverter(new org.jboss.forge.addon.convert.Converter<Converter, String>()
@@ -165,5 +160,4 @@ public class AsciidoctorSetupWizardImpl extends AbstractAsciidoctorCommand imple
       return resource;
    }
 
-  
 }
