@@ -3,9 +3,7 @@ package org.jboss.forge.addon.asciidoctor.converters;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jboss.forge.addon.asciidoctor.Converter;
-
-public class HTML5Converter implements Converter
+public class HTML5Converter extends AbstractConverter
 {
    final Map<String, String> attributes = new HashMap<>();
 
@@ -27,9 +25,5 @@ public class HTML5Converter implements Converter
       return "generate-html5-doc";
    }
    
-   @Override
-   public Map<String, String> getAttributes()
-   {
-      return attributes;
-   }
+  
 }
