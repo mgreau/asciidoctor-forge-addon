@@ -1,13 +1,17 @@
 package org.jboss.forge.addon.asciidoctor;
 
-import org.jboss.forge.addon.dependencies.Dependency;
+import java.util.List;
+
+import org.jboss.forge.addon.dependencies.Coordinate;
 import org.jboss.forge.addon.dependencies.builder.CoordinateBuilder;
-import org.jboss.forge.addon.dependencies.builder.DependencyBuilder;
+import org.jboss.forge.addon.dependencies.builder.DependencyQueryBuilder;
+import org.jboss.forge.addon.dependencies.util.NonSnapshotDependencyFilter;
 import org.jboss.forge.addon.facets.AbstractFacet;
 import org.jboss.forge.addon.facets.constraints.FacetConstraint;
 import org.jboss.forge.addon.facets.constraints.FacetConstraints;
 import org.jboss.forge.addon.maven.projects.MavenPluginFacet;
 import org.jboss.forge.addon.projects.Project;
+import org.jboss.forge.addon.projects.facets.DependencyFacet;
 import org.jboss.forge.addon.resource.ResourceFacet;
 
 /**
@@ -22,10 +26,29 @@ import org.jboss.forge.addon.resource.ResourceFacet;
 })
 public abstract class AbstractAsciidoctorFacet extends AbstractFacet<Project>
 {
-   protected static final Dependency ASCIIDOCTOR_DIAGRAM =
-            DependencyBuilder.create().setGroupId("rubygems").setArtifactId("asciidoctor-diagram").setVersion("1.2.0")
-                     .setScopeType("provided").setClassifier("gem")
-                     .addExclusion(CoordinateBuilder.create().setGroupId("rubygems").setArtifactId("asciidoctor"));
+   protected Coordinate getAsciidoctorCoordinateWithLatestVersion()
+   {
+      return getLatestVersion(createAsciidoctorCoordinate());
+   }
 
-  
+   protected CoordinateBuilder createAsciidoctorCoordinate()
+   {
+      return CoordinateBuilder.create()
+               .setGroupId("org.asciidoctor")
+               .setArtifactId("asciidoctor-maven-plugin");
+   }
+
+   protected Coordinate getLatestVersion(Coordinate dependency)
+   {
+      DependencyFacet dependencyFacet = getFaceted().getFacet(DependencyFacet.class);
+      Coordinate result = dependency;
+      List<Coordinate> versions = dependencyFacet.resolveAvailableVersions(DependencyQueryBuilder.create(dependency)
+               .setFilter(new NonSnapshotDependencyFilter()));
+      if (versions.size() > 0)
+      {
+         result = versions.get(versions.size() - 1);
+      }
+      return result;
+   }
+
 }

@@ -2,12 +2,13 @@ package org.jboss.forge.addon.asciidoctor;
 
 import javax.inject.Inject;
 
+import org.jboss.forge.addon.asciidoctor.facets.AsciidoctorDiagramFacet;
 import org.jboss.forge.addon.asciidoctor.facets.AsciidoctorFacet;
 import org.jboss.forge.addon.asciidoctor.facets.AsciidoctorGemFacet;
+import org.jboss.forge.addon.asciidoctor.facets.AsciidoctorPDFFacet;
 import org.jboss.forge.addon.asciidoctor.facets.AsciidoctorSiteFacet;
 import org.jboss.forge.addon.facets.FacetFactory;
 import org.jboss.forge.addon.parser.java.projects.JavaProjectType;
-import org.jboss.forge.addon.parser.java.projects.JavaWebProjectType;
 import org.jboss.forge.addon.projects.Project;
 import org.jboss.forge.addon.projects.ProjectFactory;
 
@@ -39,9 +40,17 @@ public class ProjectHelper
    /**
     * Installs the {@link AsciidoctorGemFacet} facet
     */
-   public AsciidoctorGemFacet installAsciidoctorGem(Project project)
+   public AsciidoctorGemFacet installAsciidoctorDiagramGem(Project project)
    {
-      return facetFactory.install(project, AsciidoctorGemFacet.class);
+      return facetFactory.install(project, AsciidoctorDiagramFacet.class);
+   }
+   
+   /**
+    * Installs the {@link AsciidoctorGemFacet} facet
+    */
+   public AsciidoctorGemFacet installAsciidoctorPDFGem(Project project)
+   {
+      return facetFactory.install(project, AsciidoctorPDFFacet.class);
    }
 
    /**

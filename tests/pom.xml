@@ -35,5 +35,11 @@
       <artifactId>asciidoctor-forge-addon</artifactId>
       <classifier>forge-addon</classifier>
     </dependency>
+    <!-- TODO : delete this dependency ? -->
+    <dependency>
+      <groupId>org.jboss.forge.addon.asciidoctor</groupId>
+      <artifactId>asciidoctor-forge-addon-impl</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 </project>

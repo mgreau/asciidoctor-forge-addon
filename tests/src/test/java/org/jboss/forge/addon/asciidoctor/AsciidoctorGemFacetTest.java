@@ -1,14 +1,16 @@
 package org.jboss.forge.addon.asciidoctor;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.forge.addon.dependencies.builder.DependencyBuilder;
+import org.jboss.forge.addon.asciidoctor.facets.AsciidoctorDiagramFacet;
+import org.jboss.forge.addon.asciidoctor.facets.AsciidoctorGemFacet;
+import org.jboss.forge.addon.dependencies.builder.CoordinateBuilder;
 import org.jboss.forge.addon.facets.FacetFactory;
+import org.jboss.forge.addon.maven.projects.MavenPluginFacet;
 import org.jboss.forge.addon.projects.Project;
 import org.jboss.forge.addon.projects.facets.DependencyFacet;
 import org.jboss.forge.arquillian.AddonDependency;
@@ -25,8 +27,8 @@ public class AsciidoctorGemFacetTest
 {
    @Deployment
    @Dependencies({
-         @AddonDependency(name = "org.jboss.forge.addon:maven"),
-         @AddonDependency(name = "org.jboss.forge.addon.asciidoctor:asciidoctor-forge-addon")
+            @AddonDependency(name = "org.jboss.forge.addon:maven"),
+            @AddonDependency(name = "org.jboss.forge.addon.asciidoctor:asciidoctor-forge-addon")
    })
    public static ForgeArchive getDeployment()
    {
@@ -45,7 +47,7 @@ public class AsciidoctorGemFacetTest
 
    @Inject
    FacetFactory facetFactory;
-   
+
    @Inject
    private ProjectHelper projectHelper;
 
@@ -54,21 +56,35 @@ public class AsciidoctorGemFacetTest
    {
       project = projectHelper.createJavaLibraryProject();
    }
-   
+
    @Test
-   public void testAsciidoctorGemInstallation() throws Exception
+   public void testAsciidoctorDiagramGemInstallation() throws Exception
    {
-      projectHelper.installAsciidoctorGem(project);
+      projectHelper.installAsciidoctorDiagramGem(project);
 
       DependencyFacet dependencyFacet = project.getFacet(DependencyFacet.class);
-      DependencyBuilder wrongDependency = DependencyBuilder.create("javax.ejb:ejb-api");
-      DependencyBuilder correctDependency = DependencyBuilder
-               .create("gem:asciidoctor-diagram");
-      assertFalse("Dependency " + wrongDependency + " should not have been added",
-               dependencyFacet.hasEffectiveManagedDependency(wrongDependency));
-      assertTrue("Dependency " + correctDependency + " should have been added",
-               dependencyFacet.hasEffectiveManagedDependency(correctDependency));
-    
+
+      // rubygems repository
+      assertTrue(dependencyFacet.hasRepository("http://rubygems-proxy.torquebox.org/releases"));
+
+      // dependency
+      assertTrue("Dependency " + AsciidoctorDiagramFacet.ASCIIDOCTOR_DIAGRAM + " should have been added",
+               dependencyFacet.hasDirectDependency(AsciidoctorDiagramFacet.ASCIIDOCTOR_DIAGRAM));
+
+      // plugin
+      MavenPluginFacet pluginFacet = project.getFacet(MavenPluginFacet.class);
+      CoordinateBuilder c = CoordinateBuilder.create().setGroupId("de.saumya.mojo").setArtifactId("gem-maven-plugin")
+               .setVersion("1.0.5");
+
+      assertTrue("Plugin " + c + " should have been added",
+               pluginFacet.hasPlugin(c));
+      
+      CoordinateBuilder admp = CoordinateBuilder.create().setGroupId("or.asciidoctor").setArtifactId("asciidoctor-maven-plugin")
+               .setVersion("1.5.0");
+      assertTrue("Plugin " + admp + " should have been added",
+               pluginFacet.hasPlugin(admp));
+      assertTrue(pluginFacet.getPlugin(admp).getConfig().hasConfigurationElements());
+      assertTrue(pluginFacet.getPlugin(admp).getConfig().listConfigurationElements().size() > 1);
    }
 
 }

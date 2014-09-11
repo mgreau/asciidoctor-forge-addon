@@ -1,10 +1,11 @@
 package org.jboss.forge.addon.asciidoctor.converters;
 
-
 public class DocBookConverter extends AbstractConverter
 {
-  
-   public DocBookConverter(){
+
+   public DocBookConverter()
+   {
+      super();
       attributes.put("doctype", "book");
    }
 
@@ -26,5 +27,11 @@ public class DocBookConverter extends AbstractConverter
       return "generate-docbook";
    }
 
+   @Override
+   public void useAsciidoctorDiagram(boolean value)
+   {
+      // TODO Auto-generated method stub
+      
+   }
 
 }

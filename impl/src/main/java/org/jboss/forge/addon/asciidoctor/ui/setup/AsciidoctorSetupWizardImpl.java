@@ -60,9 +60,6 @@ public class AsciidoctorSetupWizardImpl extends AbstractAsciidoctorCommand imple
    private Imported<AsciidoctorFacet> asciidoctorFacet;
 
    @Inject
-   private Imported<AsciidoctorGemFacet> asciidoctorGemFacet;
-
-   @Inject
    private HTML5Converter defaultConverter;
 
    @Inject
@@ -156,7 +153,8 @@ public class AsciidoctorSetupWizardImpl extends AbstractAsciidoctorCommand imple
             UIContext context, String adocFileName)
    {
       ResourcesFacet facet = getSelectedProject(context).getFacet(ResourcesFacet.class);
-      FileResource<?> resource = facet.getResource(".." + File.separator + "asciidoc" + File.separator + adocFileName);
+      //src/docs/asciidoc
+      FileResource<?> resource = facet.getResource(".." + File.separator + ".." + File.separator + "docs" + File.separator + "asciidoc" + File.separator + adocFileName);
       return resource;
    }
 

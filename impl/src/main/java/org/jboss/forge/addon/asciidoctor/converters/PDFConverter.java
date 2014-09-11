@@ -1,12 +1,14 @@
 package org.jboss.forge.addon.asciidoctor.converters;
 
-import java.util.HashMap;
-import java.util.Map;
 
 public class PDFConverter extends AbstractConverter
 {
-   final Map<String, String> attributes = new HashMap<>();
-
+   public PDFConverter()
+   {
+      super();
+      setConfigurationElement("requires", "<require>asciidoctor-pdf</require>");
+   }
+   
    @Override
    public String getName()
    {
@@ -24,6 +26,14 @@ public class PDFConverter extends AbstractConverter
    {
       return "generate-pdf-doc";
    }
-   
+
+   @Override
+   public void useAsciidoctorDiagram(boolean value)
+   {
+      // TODO Auto-generated method stub
+      
+   }
+
+
   
 }

@@ -1,12 +1,8 @@
 package org.jboss.forge.addon.asciidoctor.converters;
 
-import java.util.HashMap;
-import java.util.Map;
 
 public class HTML5Converter extends AbstractConverter
 {
-   final Map<String, String> attributes = new HashMap<>();
-
    @Override
    public String getName()
    {
@@ -24,6 +20,14 @@ public class HTML5Converter extends AbstractConverter
    {
       return "generate-html5-doc";
    }
-   
-  
+
+   public void useAsciidoctorDiagram(boolean useDiagram)
+   {
+      isGemRequired = useDiagram;
+      if (useDiagram)
+      {
+         setConfigurationElement("requires", "<require>asciidoctor-diagram</require>");
+      }
+   }
+
 }

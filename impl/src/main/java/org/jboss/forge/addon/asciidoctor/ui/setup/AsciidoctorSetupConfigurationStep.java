@@ -27,7 +27,7 @@ public class AsciidoctorSetupConfigurationStep extends AbstractAsciidoctorComman
    @Inject
    @WithAttributes(label = "Table of Content ?", required = false)
    private UIInput<String> toc;
-   
+
    @Inject
    @WithAttributes(label = "Maven execution ID", required = false)
    private UIInput<String> mavenExecutionId;
@@ -55,26 +55,22 @@ public class AsciidoctorSetupConfigurationStep extends AbstractAsciidoctorComman
       UIContext uiContext = context.getUIContext();
       Project project = getSelectedProject(uiContext);
       Converter converter = (Converter) uiContext.getAttributeMap().get(Converter.class);
-      Boolean useAsciidoctorDiagram = (Boolean) uiContext.getAttributeMap().get("useAsciidoctorDiagram");
+      converter.useAsciidoctorDiagram((Boolean) uiContext.getAttributeMap().get("useAsciidoctorDiagram"));
       String execId = mavenExecutionId.getValue();
-      
-      //Manage attributes
+
+      // Manage attributes
       converter.setAttribute(sourceHighlighter.getName(), sourceHighlighter.getValue());
       converter.setAttribute(toc.getName(), toc.getValue());
-      
-      converterOperations.setup(execId, project, converter, useAsciidoctorDiagram);
-      return Results.success("Converter "+ converter.getName()  + " is configured (gem -> " + useAsciidoctorDiagram + ").");
 
+      converterOperations.setup(execId, project, converter);
+      return Results.success("Converter " + converter.getName() + " is configured (gem required -> "
+               + converter.isGemRequired() + ").");
    }
 
    @Override
    public void initializeUI(UIBuilder builder) throws Exception
    {
-      final UIContext uiContext = builder.getUIContext();
-      Converter converter = (Converter) uiContext.getAttributeMap().get(Converter.class);
-      
       builder.add(sourceHighlighter).add(toc).add(mavenExecutionId);
-
    }
 
    @Override

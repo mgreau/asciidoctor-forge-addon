@@ -5,7 +5,7 @@ import org.jboss.forge.addon.projects.Project;
 public interface ConverterOperations
 {
    
-   public boolean setup(String unitName, Project project, Converter converter, boolean isGemMandatory);
+   public boolean setup(String unitName, Project project, Converter converter);
    
    
 
