@@ -6,6 +6,7 @@ public class PDFConverter extends AbstractConverter
    public PDFConverter()
    {
       super();
+      isGemRequired = true;
       setConfigurationElement("requires", "<require>asciidoctor-pdf</require>");
    }
    

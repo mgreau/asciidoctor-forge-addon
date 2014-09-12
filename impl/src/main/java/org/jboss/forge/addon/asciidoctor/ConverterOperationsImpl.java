@@ -37,7 +37,7 @@ public class ConverterOperationsImpl implements ConverterOperations
          {
             Iterable<AsciidoctorGemFacet> facets = facetFactory.createFacets(project,
                      AsciidoctorGemFacet.class);
-            //TODO : diagram with PDF ?
+            // TODO : diagram with PDF ?
             for (AsciidoctorGemFacet gemFacet : facets)
             {
                if (converter instanceof PDFConverter && gemFacet instanceof AsciidoctorPDFFacetImpl
@@ -45,7 +45,7 @@ public class ConverterOperationsImpl implements ConverterOperations
                {
                   break;
                }
-               
+
                if (converter instanceof HTML5Converter && gemFacet instanceof AsciidoctorDiagramFacetImpl
                         && facetFactory.install(project, gemFacet))
                {
@@ -95,7 +95,6 @@ public class ConverterOperationsImpl implements ConverterOperations
       }
       return false;
    }
-
 
    // TODO : move this method to an utility class
    private Coordinate createAsciidoctorCoordinate(Project project)

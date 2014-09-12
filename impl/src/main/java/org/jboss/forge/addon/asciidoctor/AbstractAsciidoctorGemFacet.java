@@ -101,12 +101,16 @@ public abstract class AbstractAsciidoctorGemFacet extends AbstractAsciidoctorFac
    {
       final MavenPluginFacet facet = origin.getFacet(MavenPluginFacet.class);
 
-      final MavenPlugin adp = facet.getPlugin(getAsciidoctorCoordinateWithLatestVersion());
+      //FIXME final MavenPlugin adp = facet.getPlugin(getAsciidoctorCoordinateWithLatestVersion());
+      final MavenPluginBuilder adp = MavenPluginBuilder.create().setCoordinate(getAsciidoctorCoordinateWithLatestVersion());
+      
       ConfigurationBuilder configuration = ConfigurationBuilder.create();
-      ConfigurationElement ce = configuration.createConfigurationElement("gemPath").setText(
+      configuration.createConfigurationElement("gemPath").setText(
                "${project.build.directory}/gems-provided");
+      //FIXME : bug , the updatePlugin doesn't work, we need to re-create the plugin
+      configuration.createConfigurationElement("sourceDirectory").setText("src/docs/asciidoc");
 
-      adp.getConfig().addConfigurationElement(ce);
+      adp.setConfiguration(configuration);
 
       facet.updatePlugin(adp);
    }
