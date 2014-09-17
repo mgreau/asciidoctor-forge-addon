@@ -48,6 +48,12 @@ public abstract class AbstractAsciidoctorFacet extends AbstractFacet<Project>
       {
          result = versions.get(versions.size() - 1);
       }
+      else
+      {
+    	  //Add default value for the plugin version
+    	  result = CoordinateBuilder.create(result).setVersion("1.5.0");
+      }
+      
       return result;
    }
 
