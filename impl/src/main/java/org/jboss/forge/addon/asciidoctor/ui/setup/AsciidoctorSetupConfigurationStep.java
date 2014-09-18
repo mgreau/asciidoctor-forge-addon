@@ -1,9 +1,13 @@
 package org.jboss.forge.addon.asciidoctor.ui.setup;
 
+import java.util.Iterator;
+
 import javax.inject.Inject;
 
 import org.jboss.forge.addon.asciidoctor.Converter;
 import org.jboss.forge.addon.asciidoctor.ConverterOperations;
+import org.jboss.forge.addon.asciidoctor.attributes.Attribute;
+import org.jboss.forge.addon.asciidoctor.attributes.AttributeConverter;
 import org.jboss.forge.addon.asciidoctor.ui.AbstractAsciidoctorCommand;
 import org.jboss.forge.addon.projects.Project;
 import org.jboss.forge.addon.ui.context.UIBuilder;
@@ -11,6 +15,7 @@ import org.jboss.forge.addon.ui.context.UIContext;
 import org.jboss.forge.addon.ui.context.UIExecutionContext;
 import org.jboss.forge.addon.ui.context.UINavigationContext;
 import org.jboss.forge.addon.ui.input.UIInput;
+import org.jboss.forge.addon.ui.input.UIInputMany;
 import org.jboss.forge.addon.ui.metadata.WithAttributes;
 import org.jboss.forge.addon.ui.result.NavigationResult;
 import org.jboss.forge.addon.ui.result.Result;
@@ -31,6 +36,11 @@ public class AsciidoctorSetupConfigurationStep extends AbstractAsciidoctorComman
    @Inject
    @WithAttributes(label = "Maven execution ID", required = false)
    private UIInput<String> mavenExecutionId;
+   
+   @Inject
+   @WithAttributes(shortName = 'a', label = "Attributes", required = false,
+            description = "The asciidoctor attributes configuration to be added [icons:font imagesdir:/images]")
+   private UIInputMany<Attribute> attributes;
 
    @Inject
    private ConverterOperations converterOperations;
@@ -57,20 +67,28 @@ public class AsciidoctorSetupConfigurationStep extends AbstractAsciidoctorComman
       Converter converter = (Converter) uiContext.getAttributeMap().get(Converter.class);
       converter.useAsciidoctorDiagram((Boolean) uiContext.getAttributeMap().get("useAsciidoctorDiagram"));
       String execId = mavenExecutionId.getValue();
+      String asciidoctorVersion = (String)uiContext.getAttributeMap().get("asciidoctorVersion");
 
       // Manage attributes
       converter.setAttribute(sourceHighlighter.getName(), sourceHighlighter.getValue());
       converter.setAttribute(toc.getName(), toc.getValue());
+      
+      for (Iterator<Attribute> attrs = attributes.getValue().iterator(); attrs.hasNext();)
+      {
+         Attribute attr = attrs.next();
+         converter.setAttribute(attr.getName(), attr.getValue());
+      }
 
-      converterOperations.setup(execId, project, converter);
-      return Results.success("Converter " + converter.getName() + " is configured (gem required -> "
+      converterOperations.setup(execId, project, converter, asciidoctorVersion);
+      return Results.success("Converter " + converter.getName() + " is configured - version " + asciidoctorVersion + " - (gem configured -> "
                + converter.isGemRequired() + ").");
    }
 
    @Override
    public void initializeUI(UIBuilder builder) throws Exception
    {
-      builder.add(sourceHighlighter).add(toc).add(mavenExecutionId);
+      attributes.setValueConverter(new AttributeConverter());
+      builder.add(attributes).add(sourceHighlighter).add(toc).add(mavenExecutionId);
    }
 
    @Override

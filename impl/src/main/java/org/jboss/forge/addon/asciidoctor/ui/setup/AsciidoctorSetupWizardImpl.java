@@ -10,13 +10,9 @@ import javax.inject.Inject;
 import org.jboss.forge.addon.asciidoctor.Converter;
 import org.jboss.forge.addon.asciidoctor.converters.HTML5Converter;
 import org.jboss.forge.addon.asciidoctor.facets.AsciidoctorFacet;
-import org.jboss.forge.addon.asciidoctor.facets.AsciidoctorGemFacet;
-import org.jboss.forge.addon.asciidoctor.facets.AsciidoctorSiteFacet;
 import org.jboss.forge.addon.asciidoctor.ui.AbstractAsciidoctorCommand;
 import org.jboss.forge.addon.facets.FacetFactory;
-import org.jboss.forge.addon.facets.constraints.FacetConstraint;
 import org.jboss.forge.addon.projects.Project;
-import org.jboss.forge.addon.projects.facets.DependencyFacet;
 import org.jboss.forge.addon.projects.facets.ResourcesFacet;
 import org.jboss.forge.addon.resource.FileResource;
 import org.jboss.forge.addon.resource.Resource;
@@ -40,6 +36,10 @@ import org.jboss.forge.furnace.services.Imported;
 
 public class AsciidoctorSetupWizardImpl extends AbstractAsciidoctorCommand implements AsciidoctorSetupWizard
 {
+   @Inject
+   @WithAttributes(shortName = 'v', label = "Asciidoctor version", required = true, defaultValue = "1.5.0")
+   private UIInput<String> asciidoctorVersion;
+
    @Inject
    @WithAttributes(shortName = 'n', label = "AsciiDocFile", required = true, defaultValue = "manual.adoc")
    private UIInput<String> asciiDocFile;
@@ -83,7 +83,7 @@ public class AsciidoctorSetupWizardImpl extends AbstractAsciidoctorCommand imple
    public void initializeUI(UIBuilder builder) throws Exception
    {
       initConverters();
-      builder.add(asciiDocFile).add(useAsciidoctorDiagram).add(converter).add(docWriter);
+      builder.add(asciidoctorVersion).add(asciiDocFile).add(useAsciidoctorDiagram).add(converter).add(docWriter);
    }
 
    @Override
@@ -143,6 +143,7 @@ public class AsciidoctorSetupWizardImpl extends AbstractAsciidoctorCommand imple
    private void applyUIValues(final UIContext context)
    {
       Map<Object, Object> attributeMap = context.getAttributeMap();
+      attributeMap.put("asciidoctorVersion", asciidoctorVersion.getValue());
       attributeMap.put("asciiDocFile", asciiDocFile.getValue());
       attributeMap.put("useAsciidoctorDiagram", useAsciidoctorDiagram.getValue());
       attributeMap.put(Converter.class, converter.getValue());
@@ -153,8 +154,9 @@ public class AsciidoctorSetupWizardImpl extends AbstractAsciidoctorCommand imple
             UIContext context, String adocFileName)
    {
       ResourcesFacet facet = getSelectedProject(context).getFacet(ResourcesFacet.class);
-      //src/docs/asciidoc
-      FileResource<?> resource = facet.getResource(".." + File.separator + ".." + File.separator + "docs" + File.separator + "asciidoc" + File.separator + adocFileName);
+      // src/docs/asciidoc
+      FileResource<?> resource = facet.getResource(".." + File.separator + ".." + File.separator + "docs"
+               + File.separator + "asciidoc" + File.separator + adocFileName);
       return resource;
    }
 

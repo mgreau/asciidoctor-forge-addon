@@ -1,6 +1,5 @@
 package org.jboss.forge.addon.asciidoctor;
 
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -10,8 +9,6 @@ import org.jboss.forge.addon.asciidoctor.converters.PDFConverter;
 import org.jboss.forge.addon.asciidoctor.facets.AsciidoctorGemFacet;
 import org.jboss.forge.addon.dependencies.Coordinate;
 import org.jboss.forge.addon.dependencies.builder.CoordinateBuilder;
-import org.jboss.forge.addon.dependencies.builder.DependencyQueryBuilder;
-import org.jboss.forge.addon.dependencies.util.NonSnapshotDependencyFilter;
 import org.jboss.forge.addon.facets.FacetFactory;
 import org.jboss.forge.addon.maven.plugins.ConfigurationBuilder;
 import org.jboss.forge.addon.maven.plugins.ConfigurationElementBuilder;
@@ -20,7 +17,6 @@ import org.jboss.forge.addon.maven.plugins.MavenPlugin;
 import org.jboss.forge.addon.maven.plugins.MavenPluginBuilder;
 import org.jboss.forge.addon.maven.projects.MavenPluginFacet;
 import org.jboss.forge.addon.projects.Project;
-import org.jboss.forge.addon.projects.facets.DependencyFacet;
 
 public class ConverterOperationsImpl implements ConverterOperations
 {
@@ -28,7 +24,7 @@ public class ConverterOperationsImpl implements ConverterOperations
    private FacetFactory facetFactory;
 
    @Override
-   public boolean setup(String execId, Project project, Converter converter)
+   public boolean setup(String execId, Project project, Converter converter, String asciidoctorVersion)
    {
       if (project != null)
       {
@@ -55,11 +51,13 @@ public class ConverterOperationsImpl implements ConverterOperations
          }
 
          MavenPluginFacet facet = project.getFacet(MavenPluginFacet.class);
-         Coordinate asciidoctorCoordinate = createAsciidoctorCoordinate(project);
+         Coordinate asciidoctorCoordinate = createAsciidoctorCoordinate();
          if (facet.hasPlugin(asciidoctorCoordinate))
          {
             MavenPlugin asciidoctorPlugin = facet.getPlugin(asciidoctorCoordinate);
 
+            Coordinate asciidoctorCoordinateWithVersion = createAsciidoctorCoordinate().setVersion(asciidoctorVersion);
+            
             ConfigurationBuilder configuration = ConfigurationBuilder.create();
             for (Map.Entry<String, String> element : converter.getConfiguration().entrySet())
             {
@@ -86,7 +84,7 @@ public class ConverterOperationsImpl implements ConverterOperations
                      .setConfig(configuration);
 
             final MavenPlugin asciidoctorPluginUpdate = MavenPluginBuilder.create(asciidoctorPlugin).addExecution(
-                     execution);
+                     execution).setCoordinate(asciidoctorCoordinateWithVersion);
             facet.updatePlugin(asciidoctorPluginUpdate);
 
             return true;
@@ -96,21 +94,12 @@ public class ConverterOperationsImpl implements ConverterOperations
       return false;
    }
 
-   // TODO : move this method to an utility class
-   private Coordinate createAsciidoctorCoordinate(Project project)
+
+   private CoordinateBuilder createAsciidoctorCoordinate()
    {
-      Coordinate result = CoordinateBuilder.create()
+      return CoordinateBuilder.create()
                .setGroupId("org.asciidoctor")
                .setArtifactId("asciidoctor-maven-plugin");
-
-      List<Coordinate> versions = project.getFacet(DependencyFacet.class).resolveAvailableVersions(
-               DependencyQueryBuilder.create(result)
-                        .setFilter(new NonSnapshotDependencyFilter()));
-      if (versions.size() > 0)
-      {
-         result = versions.get(versions.size() - 1);
-      }
-      return result;
    }
 
 }

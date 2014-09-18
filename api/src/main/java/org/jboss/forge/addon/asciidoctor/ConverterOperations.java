@@ -5,7 +5,7 @@ import org.jboss.forge.addon.projects.Project;
 public interface ConverterOperations
 {
    
-   public boolean setup(String unitName, Project project, Converter converter);
+   public boolean setup(String uniqueName, Project project, Converter converter, String asciidoctorVersion);
    
    
 
