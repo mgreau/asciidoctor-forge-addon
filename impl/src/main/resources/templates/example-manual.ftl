@@ -15,11 +15,14 @@ We just haven't decided what that is yet.
 
 == Source Code
 
-[source,java]
-.Java code from project
+[source,ruby]
 ----
-include::{sourcedir}/example/StringUtils.java[tags=contains,indent=0]
+require 'asciidoctor'  # <1>
+
+puts Asciidoctor.render_file('sample.adoc', :header_footer => true)  # <2>
 ----
+<1> Imports the library
+<2> Reads, parses and renders the file
 
  $ mvn process-resources
 
@@ -63,11 +66,4 @@ imagesdir:: {imagesdir}
 sourcedir:: {sourcedir}
 Publish URL:: {publish-url}
 
-== Includes
 
-.include::subdir/_b.adoc[]
-====
-include::subdir/_b.adoc[]
-====
-
-WARNING: Includes can be tricky!
