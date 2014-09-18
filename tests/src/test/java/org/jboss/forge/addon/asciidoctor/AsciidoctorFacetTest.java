@@ -74,12 +74,11 @@ public class AsciidoctorFacetTest
       assertNotNull(asciidoctorPlugin);
       
       assertNotNull(asciidoctorPlugin.getCoordinate().getVersion());
-      assertEquals(asciidoctorPlugin.getCoordinate().getVersion(), "1.5.0");
       
       Converter html5Converter = new HTML5Converter();
       html5Converter.setAttribute("toc", "left");
       html5Converter.useAsciidoctorDiagram(false);
-      converterOps.setup("id-test", project, html5Converter);
+      converterOps.setup("id-test", project, html5Converter, "1.5.0");
       
       asciidoctorPlugin = facet.getPlugin(CoordinateBuilder.create("org.asciidoctor:asciidoctor-maven-plugin"));
       assertEquals(1, asciidoctorPlugin.listExecutions().size());

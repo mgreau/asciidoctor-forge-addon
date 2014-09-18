@@ -79,7 +79,7 @@ public class AsciidoctorGemFacetTest
       assertTrue("Plugin " + c + " should have been added",
                pluginFacet.hasPlugin(c));
       
-      CoordinateBuilder admp = CoordinateBuilder.create().setGroupId("or.asciidoctor").setArtifactId("asciidoctor-maven-plugin")
+      CoordinateBuilder admp = CoordinateBuilder.create().setGroupId("org.asciidoctor").setArtifactId("asciidoctor-maven-plugin")
                .setVersion("1.5.0");
       assertTrue("Plugin " + admp + " should have been added",
                pluginFacet.hasPlugin(admp));
