@@ -5,14 +5,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.jboss.forge.addon.asciidoctor.facets.AsciidoctorGemFacet;
+import org.jboss.forge.addon.dependencies.Coordinate;
 import org.jboss.forge.addon.dependencies.Dependency;
 import org.jboss.forge.addon.dependencies.builder.CoordinateBuilder;
 import org.jboss.forge.addon.facets.constraints.FacetConstraint;
 import org.jboss.forge.addon.facets.constraints.FacetConstraints;
 import org.jboss.forge.addon.maven.plugins.ConfigurationBuilder;
-import org.jboss.forge.addon.maven.plugins.ConfigurationElement;
 import org.jboss.forge.addon.maven.plugins.ExecutionBuilder;
-import org.jboss.forge.addon.maven.plugins.MavenPlugin;
 import org.jboss.forge.addon.maven.plugins.MavenPluginBuilder;
 import org.jboss.forge.addon.maven.projects.MavenPluginFacet;
 import org.jboss.forge.addon.projects.facets.DependencyFacet;
@@ -79,35 +78,40 @@ public abstract class AbstractAsciidoctorGemFacet extends AbstractAsciidoctorFac
    private void addGemPlugin()
    {
       final MavenPluginFacet facet = origin.getFacet(MavenPluginFacet.class);
-
-      final MavenPluginBuilder gmp = MavenPluginBuilder.create().setCoordinate(CoordinateBuilder.create()
+      Coordinate gemCoordinate = CoordinateBuilder.create()
                .setGroupId("de.saumya.mojo")
-               .setArtifactId("gem-maven-plugin").setVersion("1.0.5"));
+               .setArtifactId("gem-maven-plugin").setVersion("1.0.5");
 
-      final ConfigurationBuilder configuration = ConfigurationBuilder.create();
-      configuration.createConfigurationElement("jrubyVersion").setText("1.7.9");
-      configuration.createConfigurationElement("gemHome").setText("${project.build.directory}/gems");
-      configuration.createConfigurationElement("gemPath").setText("${project.build.directory}/gems");
+      if (!facet.hasPlugin(gemCoordinate))
+      {
+         final MavenPluginBuilder gmp = MavenPluginBuilder.create().setCoordinate(gemCoordinate);
 
-      final ExecutionBuilder execution = ExecutionBuilder.create()
-               .addGoal("initialize")
-               .setConfig(configuration);
-      gmp.addExecution(execution);
+         final ConfigurationBuilder configuration = ConfigurationBuilder.create();
+         configuration.createConfigurationElement("jrubyVersion").setText("1.7.9");
+         configuration.createConfigurationElement("gemHome").setText("${project.build.directory}/gems");
+         configuration.createConfigurationElement("gemPath").setText("${project.build.directory}/gems");
 
-      facet.addPlugin(gmp);
+         final ExecutionBuilder execution = ExecutionBuilder.create()
+                  .addGoal("initialize")
+                  .setConfig(configuration);
+         gmp.addExecution(execution);
+
+         facet.addPlugin(gmp);
+      }
    }
 
    private void updateAsciidoctorPlugin()
    {
       final MavenPluginFacet facet = origin.getFacet(MavenPluginFacet.class);
 
-      //FIXME final MavenPlugin adp = facet.getPlugin(getAsciidoctorCoordinateWithLatestVersion());
-      final MavenPluginBuilder adp = MavenPluginBuilder.create().setCoordinate(getAsciidoctorCoordinateWithLatestVersion());
-      
+      // FIXME final MavenPlugin adp = facet.getPlugin(getAsciidoctorCoordinateWithLatestVersion());
+      final MavenPluginBuilder adp = MavenPluginBuilder.create().setCoordinate(
+               getAsciidoctorCoordinateWithLatestVersion());
+
       ConfigurationBuilder configuration = ConfigurationBuilder.create();
       configuration.createConfigurationElement("gemPath").setText(
                "${project.build.directory}/gems-provided");
-      //FIXME : bug , the updatePlugin doesn't work, we need to re-create the plugin
+      // FIXME : bug , the updatePlugin doesn't work, we need to re-create the plugin
       configuration.createConfigurationElement("sourceDirectory").setText("src/docs/asciidoc");
 
       adp.setConfiguration(configuration);
