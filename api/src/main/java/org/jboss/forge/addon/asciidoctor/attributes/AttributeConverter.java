@@ -6,14 +6,14 @@ import org.jboss.forge.addon.convert.Converter;
  */
 public class AttributeConverter implements Converter<String, Attribute>
 {
-   private static final String COLON = ":";
+   private static final String SEPARATOR = "=";
 
    @Override
    public Attribute convert(String source)
    {
-      if (source.contains(COLON))
+      if (source.contains(SEPARATOR))
       {
-         String[] attr = source.split(COLON);
+         String[] attr = source.split(SEPARATOR);
          return new Attribute(attr[0], attr.length > 1 ? attr[1] : "");
       }
       else
