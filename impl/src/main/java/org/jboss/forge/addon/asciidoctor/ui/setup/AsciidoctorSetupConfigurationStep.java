@@ -39,7 +39,7 @@ public class AsciidoctorSetupConfigurationStep extends AbstractAsciidoctorComman
    
    @Inject
    @WithAttributes(shortName = 'a', label = "Attributes", required = false,
-            description = "The asciidoctor attributes configuration to be added [icons:font imagesdir:/images]")
+            description = "The asciidoctor attributes configuration to be added [icons=font imagesdir=/images]")
    private UIInputMany<Attribute> attributes;
 
    @Inject

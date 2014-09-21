@@ -13,7 +13,7 @@ public class PDFConverter extends AbstractConverter
    @Override
    public String getName()
    {
-      return "PDF";
+      return "pdf";
    }
 
    @Override

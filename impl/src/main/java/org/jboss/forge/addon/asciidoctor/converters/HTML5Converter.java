@@ -6,7 +6,7 @@ public class HTML5Converter extends AbstractConverter
    @Override
    public String getName()
    {
-      return "HTML5";
+      return "html5";
    }
 
    @Override

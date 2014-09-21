@@ -28,9 +28,6 @@ puts Asciidoctor.render_file('sample.adoc', :header_footer => true)  # <2>
 
 == Images
 
-[.thumb]
-image::sunset.jpg[]
-
 [ditaa,asciidoctor-diagram-process]
 ....
                    +-------------+

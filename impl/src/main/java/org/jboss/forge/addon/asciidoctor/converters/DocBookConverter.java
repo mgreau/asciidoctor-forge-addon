@@ -12,7 +12,7 @@ public class DocBookConverter extends AbstractConverter
    @Override
    public String getName()
    {
-      return "DocBook";
+      return "docbook";
    }
 
    @Override
