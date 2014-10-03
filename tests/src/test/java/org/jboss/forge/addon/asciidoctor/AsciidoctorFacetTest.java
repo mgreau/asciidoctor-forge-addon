@@ -55,9 +55,8 @@ public class AsciidoctorFacetTest
    @Inject
    private ProjectHelper projectHelper;
 
-   @Inject
    private ConverterOperations converterOps;
-   
+
    private String asciidoctorVersion;
    private String asciidoctorMavenPluginVersion;
 
@@ -77,10 +76,12 @@ public class AsciidoctorFacetTest
       MavenPlugin asciidoctorPlugin = facet.getPlugin(CoordinateBuilder
                .create("org.asciidoctor:asciidoctor-maven-plugin"));
 
-      assertTrue(project.hasFacet(AsciidoctorFacet.class));
-      assertNotNull(asciidoctorPlugin);
-      assertNotNull(asciidoctorPlugin.getCoordinate().getVersion());
-      assertEquals(asciidoctorMavenPluginVersion, asciidoctorPlugin.getCoordinate().getVersion());
+      assertTrue("AsciidoctorFacet should have been added.", project.hasFacet(AsciidoctorFacet.class));
+      assertNotNull("Plugin asciidoctor should have been added.", asciidoctorPlugin);
+      assertNotNull("Plugin asciidoctor should have been added with a version.", asciidoctorPlugin.getCoordinate()
+               .getVersion());
+      assertEquals("Plugin asciidoctor should have been added with the default versionf.",
+               asciidoctorMavenPluginVersion, asciidoctorPlugin.getCoordinate().getVersion());
    }
 
    @Test
@@ -94,8 +95,10 @@ public class AsciidoctorFacetTest
       html5Converter.useAsciidoctorDiagram(false);
       converterOps.setup("id-test", project, html5Converter, asciidoctorVersion);
 
-      MavenPlugin asciidoctorPlugin = facet.getPlugin(CoordinateBuilder.create("org.asciidoctor:asciidoctor-maven-plugin"));
-      assertEquals(1, asciidoctorPlugin.listExecutions().size());
+      MavenPlugin asciidoctorPlugin = facet.getPlugin(CoordinateBuilder
+               .create("org.asciidoctor:asciidoctor-maven-plugin"));
+      assertEquals("Plugin asciidoctor should have been configured with attributes.", 1, asciidoctorPlugin
+               .listExecutions().size());
 
       // Check configuration
       Configuration asciidoctorConfig = asciidoctorPlugin.listExecutions().get(0).getConfig();
@@ -103,7 +106,6 @@ public class AsciidoctorFacetTest
                asciidoctorConfig.getConfigurationElement("backend").getText());
       assertEquals("left",
                asciidoctorConfig.getConfigurationElement("attributes").getChildByName("toc").getText());
-
    }
 
    @Test
@@ -111,7 +113,7 @@ public class AsciidoctorFacetTest
    {
       projectHelper.installAsciidoctor(project);
       MavenPluginFacet facet = project.getFacet(MavenPluginFacet.class);
-      
+
       Converter html5Converter = new HTML5Converter();
       html5Converter.setAttribute("toc", "left");
       html5Converter.useAsciidoctorDiagram(false);

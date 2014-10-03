@@ -4,13 +4,10 @@ import java.io.File;
 
 import javax.inject.Inject;
 
-import org.jboss.forge.addon.asciidoctor.facets.AsciidoctorFacet;
 import org.jboss.forge.addon.asciidoctor.facets.AsciidoctorSiteFacet;
 import org.jboss.forge.addon.asciidoctor.ui.AbstractAsciidoctorCommand;
 import org.jboss.forge.addon.facets.FacetFactory;
 import org.jboss.forge.addon.projects.Project;
-import org.jboss.forge.addon.projects.facets.ResourcesFacet;
-import org.jboss.forge.addon.resource.FileResource;
 import org.jboss.forge.addon.ui.context.UIBuilder;
 import org.jboss.forge.addon.ui.context.UIContext;
 import org.jboss.forge.addon.ui.context.UIExecutionContext;

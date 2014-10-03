@@ -45,12 +45,12 @@ public class AsciidoctorFacetImpl extends AbstractAsciidoctorFacet implements As
    private void addAsciidoctorPlugin()
    {
       MavenPluginFacet facet = getFaceted().getFacet(MavenPluginFacet.class);
-      CoordinateBuilder asciidoctorCoordinate = createAsciidoctorCoordinate();
+      CoordinateBuilder asciidoctorCoordinate = createAsciidoctorMPCoordinate();
       if (facet.hasPlugin(asciidoctorCoordinate))
       {
          return;
       }
-      Coordinate versioned = getLatestVersion(asciidoctorCoordinate);
+      Coordinate versioned = getAsciidoctorMPLatestVersion(asciidoctorCoordinate);
 
       ConfigurationBuilder configuration = ConfigurationBuilder.create();
       configuration.createConfigurationElement("sourceDirectory").setText("src/docs/asciidoc");
@@ -63,7 +63,7 @@ public class AsciidoctorFacetImpl extends AbstractAsciidoctorFacet implements As
 
    private boolean asciidoctorConfigured()
    {
-      CoordinateBuilder dependency = createAsciidoctorCoordinate().setVersion(null);
+      CoordinateBuilder dependency = createAsciidoctorMPCoordinate().setVersion(null);
       MavenPluginFacet pluginFacet = getFaceted().getFacet(MavenPluginFacet.class);
       if (pluginFacet.hasPlugin(dependency))
       {

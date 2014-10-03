@@ -26,19 +26,19 @@ import org.jboss.forge.addon.resource.ResourceFacet;
 })
 public abstract class AbstractAsciidoctorFacet extends AbstractFacet<Project>
 {
-   protected Coordinate getAsciidoctorCoordinateWithLatestVersion()
+   protected Coordinate getAsciidoctorMPCoordinateWithLatestVersion()
    {
-      return getLatestVersion(createAsciidoctorCoordinate());
+      return getAsciidoctorMPLatestVersion(createAsciidoctorMPCoordinate());
    }
 
-   protected CoordinateBuilder createAsciidoctorCoordinate()
+   protected CoordinateBuilder createAsciidoctorMPCoordinate()
    {
       return CoordinateBuilder.create()
                .setGroupId("org.asciidoctor")
                .setArtifactId("asciidoctor-maven-plugin");
    }
 
-   protected Coordinate getLatestVersion(Coordinate dependency)
+   protected Coordinate getAsciidoctorMPLatestVersion(Coordinate dependency)
    {
       DependencyFacet dependencyFacet = getFaceted().getFacet(DependencyFacet.class);
       Coordinate result = dependency;

@@ -1,17 +1,20 @@
 package org.jboss.forge.addon.asciidoctor;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.forge.addon.asciidoctor.facets.AsciidoctorDiagramFacet;
+import org.jboss.forge.addon.asciidoctor.facets.AsciidoctorSiteFacet;
+import org.jboss.forge.addon.dependencies.Dependency;
 import org.jboss.forge.addon.dependencies.builder.CoordinateBuilder;
 import org.jboss.forge.addon.facets.FacetFactory;
+import org.jboss.forge.addon.maven.plugins.MavenPlugin;
 import org.jboss.forge.addon.maven.projects.MavenPluginFacet;
 import org.jboss.forge.addon.projects.Project;
-import org.jboss.forge.addon.projects.facets.DependencyFacet;
 import org.jboss.forge.arquillian.AddonDependency;
 import org.jboss.forge.arquillian.Dependencies;
 import org.jboss.forge.arquillian.archive.ForgeArchive;
@@ -22,7 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class AsciidoctorGemFacetTest
+public class AsciidoctorSiteFacetTest
 {
    @Deployment
    @Dependencies({
@@ -60,34 +63,34 @@ public class AsciidoctorGemFacetTest
    }
 
    @Test
-   public void testAsciidoctorDiagramGemInstallation() throws Exception
+   public void testAsciidoctorInstallationForSitePlugin() throws Exception
    {
-      projectHelper.installAsciidoctorDiagramGem(project);
+      projectHelper.installAsciidoctorSite(project);
+      MavenPluginFacet facet = project.getFacet(MavenPluginFacet.class);
+      MavenPlugin mavenSitePlugin = facet.getPlugin(CoordinateBuilder
+               .create("org.apache.maven.plugins:maven-site-plugin"));
 
-      DependencyFacet dependencyFacet = project.getFacet(DependencyFacet.class);
-      // rubygems repository
-      assertTrue("Repository rubygems should have been added.",
-               dependencyFacet.hasRepository("http://rubygems-proxy.torquebox.org/releases"));
-      // dependency
-      assertTrue("Dependency " + AsciidoctorDiagramFacet.ASCIIDOCTOR_DIAGRAM + " should have been added",
-               dependencyFacet.hasDirectDependency(AsciidoctorDiagramFacet.ASCIIDOCTOR_DIAGRAM));
+      assertNotNull("maven-site-plugin should have been added.", mavenSitePlugin);
+      assertTrue("AsciidoctorSiteFacet should have been added.", project.hasFacet(AsciidoctorSiteFacet.class));
+      assertNotNull("maven-site-plugin  should have been added with a groupid.", mavenSitePlugin.getCoordinate()
+               .getGroupId());
+      assertNotNull("maven-site-plugin  should have been added with a version.", mavenSitePlugin.getCoordinate()
+               .getVersion());
 
-      // plugin
-      MavenPluginFacet pluginFacet = project.getFacet(MavenPluginFacet.class);
-      CoordinateBuilder c = CoordinateBuilder.create().setGroupId("de.saumya.mojo").setArtifactId("gem-maven-plugin")
-               .setVersion("1.0.5");
-
-      assertTrue("Plugin " + c + " should have been added",
-               pluginFacet.hasPlugin(c));
-
-      CoordinateBuilder admp = CoordinateBuilder.create().setGroupId("org.asciidoctor")
-               .setArtifactId("asciidoctor-maven-plugin")
-               .setVersion(asciidoctorMavenPluginVersion);
-
-      assertTrue("Plugin " + admp + " should have been added",
-               pluginFacet.hasPlugin(admp));
-      assertTrue(pluginFacet.getPlugin(admp).getConfig().hasConfigurationElements());
-      assertTrue(pluginFacet.getPlugin(admp).getConfig().listConfigurationElements().size() > 1);
+      // Check asciidoctor-maven-plugin dependency
+      String ampVersion = "";
+      boolean isDependencyInstalled = false;
+      for (Dependency d : mavenSitePlugin.getDirectDependencies())
+      {
+         if ("asciidoctor-maven-plugin".equals(d.getCoordinate().getArtifactId()))
+         {
+            isDependencyInstalled = true;
+            ampVersion = d.getCoordinate().getVersion();
+            break;
+         }
+      }
+      assertTrue("Plugin asciidoctor-maven-plugin should have been added.", isDependencyInstalled);
+      assertEquals("Plugin asciidoctor-maven-plugin should have been added with the default version.",
+               asciidoctorMavenPluginVersion, ampVersion);
    }
-
 }

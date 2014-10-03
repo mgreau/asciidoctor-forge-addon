@@ -106,7 +106,7 @@ public abstract class AbstractAsciidoctorGemFacet extends AbstractAsciidoctorFac
 
       // FIXME final MavenPlugin adp = facet.getPlugin(getAsciidoctorCoordinateWithLatestVersion());
       final MavenPluginBuilder adp = MavenPluginBuilder.create().setCoordinate(
-               getAsciidoctorCoordinateWithLatestVersion());
+               getAsciidoctorMPCoordinateWithLatestVersion());
 
       ConfigurationBuilder configuration = ConfigurationBuilder.create();
       configuration.createConfigurationElement("gemPath").setText(

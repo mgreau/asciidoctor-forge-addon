@@ -1,6 +1,7 @@
 package org.jboss.forge.addon.asciidoctor;
 
 import org.jboss.forge.addon.asciidoctor.facets.AsciidoctorSiteFacet;
+import org.jboss.forge.addon.dependencies.Dependency;
 import org.jboss.forge.addon.dependencies.builder.CoordinateBuilder;
 import org.jboss.forge.addon.dependencies.builder.DependencyBuilder;
 import org.jboss.forge.addon.facets.constraints.FacetConstraint;
@@ -54,11 +55,18 @@ public class AsciidoctorSiteFacetImpl extends AbstractAsciidoctorFacet implement
 
    private boolean asciidoctorConfiguredForMavenSitePlugin()
    {
-      CoordinateBuilder dependency = createAsciidoctorCoordinate().setVersion(null);
-      MavenPluginFacet pluginFacet = getFaceted().getFacet(MavenPluginFacet.class);
-      if (pluginFacet.hasPlugin(dependency))
+      MavenPluginFacet facet = getFaceted().getFacet(MavenPluginFacet.class);
+
+      CoordinateBuilder mavenSitePluginCoordinate = createMavenSitePluginCoordinate();
+      if (facet.hasPlugin(mavenSitePluginCoordinate))
       {
-         return true;
+         for (Dependency d : facet.getPlugin(mavenSitePluginCoordinate).getDirectDependencies())
+         {
+            if ("asciidoctor-maven-plugin".equals(d.getCoordinate().getArtifactId()))
+            {
+               return true;
+            }
+         }
       }
       return false;
    }
@@ -78,7 +86,7 @@ public class AsciidoctorSiteFacetImpl extends AbstractAsciidoctorFacet implement
 
    private DependencyBuilder createAsciidoctorMavenPluginDependency()
    {
-      return DependencyBuilder.create().setCoordinate(getAsciidoctorCoordinateWithLatestVersion());
+      return DependencyBuilder.create().setCoordinate(getAsciidoctorMPCoordinateWithLatestVersion());
    }
 
 }
