@@ -1,8 +1,12 @@
 package org.jboss.forge.addon.asciidoctor;
 
 import org.jboss.forge.addon.asciidoctor.facets.AsciidoctorSiteFacet;
+import org.jboss.forge.addon.dependencies.builder.CoordinateBuilder;
+import org.jboss.forge.addon.dependencies.builder.DependencyBuilder;
 import org.jboss.forge.addon.facets.constraints.FacetConstraint;
 import org.jboss.forge.addon.facets.constraints.FacetConstraints;
+import org.jboss.forge.addon.maven.plugins.MavenPlugin;
+import org.jboss.forge.addon.maven.plugins.MavenPluginBuilder;
 import org.jboss.forge.addon.maven.projects.MavenPluginFacet;
 
 /**
@@ -18,23 +22,63 @@ public class AsciidoctorSiteFacetImpl extends AbstractAsciidoctorFacet implement
 
    public AsciidoctorSiteFacetImpl()
    {
-      
+
    }
 
    @Override
    public boolean install()
    {
-      // TODO Auto-generated method stub
+      addAsciidoctorPluginToSitePlugin();
+
+      return true;
+   }
+
+   private void addAsciidoctorPluginToSitePlugin()
+   {
+      MavenPluginFacet facet = getFaceted().getFacet(MavenPluginFacet.class);
+      // check maven site plugin
+      String versionMavenSitePlugin = "3.3";
+
+      CoordinateBuilder mavenSitePluginCoordinate = createMavenSitePluginCoordinate();
+      if (facet.hasPlugin(mavenSitePluginCoordinate))
+      {
+         versionMavenSitePlugin = facet.getPlugin(mavenSitePluginCoordinate).getCoordinate().getVersion();
+      }
+
+      final MavenPlugin mavenSitePlugin = MavenPluginBuilder.create()
+               .setCoordinate(createMavenSitePluginCoordinate().setVersion(versionMavenSitePlugin))
+               .addPluginDependency(
+                        createAsciidoctorMavenPluginDependency());
+      facet.updatePlugin(mavenSitePlugin);
+   }
+
+   private boolean asciidoctorConfiguredForMavenSitePlugin()
+   {
+      CoordinateBuilder dependency = createAsciidoctorCoordinate().setVersion(null);
+      MavenPluginFacet pluginFacet = getFaceted().getFacet(MavenPluginFacet.class);
+      if (pluginFacet.hasPlugin(dependency))
+      {
+         return true;
+      }
       return false;
    }
 
    @Override
    public boolean isInstalled()
    {
-      // TODO Auto-generated method stub
-      return false;
+      return asciidoctorConfiguredForMavenSitePlugin();
    }
 
-  
+   protected CoordinateBuilder createMavenSitePluginCoordinate()
+   {
+      return CoordinateBuilder.create()
+               .setGroupId("org.apache.maven.plugins")
+               .setArtifactId("maven-site-plugin");
+   }
+
+   private DependencyBuilder createAsciidoctorMavenPluginDependency()
+   {
+      return DependencyBuilder.create().setCoordinate(getAsciidoctorCoordinateWithLatestVersion());
+   }
 
 }

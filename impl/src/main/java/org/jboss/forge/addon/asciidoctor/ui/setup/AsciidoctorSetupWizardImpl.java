@@ -1,8 +1,6 @@
 package org.jboss.forge.addon.asciidoctor.ui.setup;
 
 import java.io.File;
-import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -13,14 +11,6 @@ import org.jboss.forge.addon.asciidoctor.facets.AsciidoctorFacet;
 import org.jboss.forge.addon.asciidoctor.ui.AbstractAsciidoctorCommand;
 import org.jboss.forge.addon.facets.FacetFactory;
 import org.jboss.forge.addon.projects.Project;
-import org.jboss.forge.addon.projects.facets.ResourcesFacet;
-import org.jboss.forge.addon.resource.FileResource;
-import org.jboss.forge.addon.resource.Resource;
-import org.jboss.forge.addon.resource.ResourceFactory;
-import org.jboss.forge.addon.resource.URLResource;
-import org.jboss.forge.addon.templates.Template;
-import org.jboss.forge.addon.templates.TemplateFactory;
-import org.jboss.forge.addon.templates.freemarker.FreemarkerTemplate;
 import org.jboss.forge.addon.ui.context.UIBuilder;
 import org.jboss.forge.addon.ui.context.UIContext;
 import org.jboss.forge.addon.ui.context.UIExecutionContext;
@@ -69,12 +59,6 @@ public class AsciidoctorSetupWizardImpl extends AbstractAsciidoctorCommand imple
    @Inject
    private FacetFactory facetFactory;
 
-   @Inject
-   TemplateFactory templateFactory;
-
-   @Inject
-   ResourceFactory resourceFactory;
-
    @Override
    public Metadata getMetadata(UIContext context)
    {
@@ -99,7 +83,7 @@ public class AsciidoctorSetupWizardImpl extends AbstractAsciidoctorCommand imple
       AsciidoctorFacet facet = asciidoctorFacet.get();
       if (facetFactory.install(project, facet))
       {
-         createAsciiDocFile(context);
+         createAsciiDocFile(context, getPath(), docWriter.getValue());
          return Results.success("Asciidoctor setup SUCCESS.");
       }
 
@@ -117,18 +101,6 @@ public class AsciidoctorSetupWizardImpl extends AbstractAsciidoctorCommand imple
          }
       });
       converter.setDefaultValue(defaultConverter);
-   }
-
-   private void createAsciiDocFile(final UIExecutionContext context) throws Exception
-   {
-      FileResource<?> asciiDocFileResource = getAsciiDocFileResource(context.getUIContext(), asciiDocFile.getValue());
-      Resource<URL> templateAsciiDocFile = resourceFactory.create(
-               getClass().getResource("/templates/example-manual.ftl")).reify(URLResource.class);
-      Template template = templateFactory.create(templateAsciiDocFile, FreemarkerTemplate.class);
-      Map<String, Object> templateContext = new HashMap<>();
-      templateContext.put("docWriter", docWriter.getValue());
-      asciiDocFileResource.createNewFile();
-      asciiDocFileResource.setContents(template.process(templateContext));
    }
 
    @Override
@@ -154,14 +126,11 @@ public class AsciidoctorSetupWizardImpl extends AbstractAsciidoctorCommand imple
       attributeMap.put("docWriter", docWriter.getValue());
    }
 
-   private FileResource<?> getAsciiDocFileResource(
-            UIContext context, String adocFileName)
+   private String getPath()
    {
-      ResourcesFacet facet = getSelectedProject(context).getFacet(ResourcesFacet.class);
       // src/docs/asciidoc
-      FileResource<?> resource = facet.getResource(".." + File.separator + ".." + File.separator + "docs"
-               + File.separator + "asciidoc" + File.separator + adocFileName);
-      return resource;
+      return ".." + File.separator + ".." + File.separator + "docs"
+               + File.separator + "asciidoc" + File.separator + asciiDocFile.getValue();
    }
 
 }
