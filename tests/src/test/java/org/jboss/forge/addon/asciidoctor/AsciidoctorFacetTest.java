@@ -31,8 +31,8 @@ public class AsciidoctorFacetTest
 {
    @Deployment
    @Dependencies({
-         @AddonDependency(name = "org.jboss.forge.addon:maven"),
-         @AddonDependency(name = "org.jboss.forge.addon.asciidoctor:asciidoctor-forge-addon")
+            @AddonDependency(name = "org.jboss.forge.addon:maven"),
+            @AddonDependency(name = "org.jboss.forge.addon.asciidoctor:asciidoctor-forge-addon")
    })
    public static ForgeArchive getDeployment()
    {
@@ -51,59 +51,86 @@ public class AsciidoctorFacetTest
 
    @Inject
    FacetFactory facetFactory;
-   
+
    @Inject
    private ProjectHelper projectHelper;
-   
+
    @Inject
    private ConverterOperations converterOps;
+   
+   private String asciidoctorVersion;
+   private String asciidoctorMavenPluginVersion;
 
    @Before
    public void setUp()
    {
       project = projectHelper.createJavaLibraryProject();
+      asciidoctorVersion = "1.6.0";
+      asciidoctorMavenPluginVersion = "1.5.0";
    }
-   
+
    @Test
-   public void testAsciidoctorInstallation() throws Exception
+   public void testAsciidoctorMPInstallation() throws Exception
    {
-      final String asciidoctorVersion = "1.6.0";
-      final String asciidoctorMavenPluginVersion = "1.5.0";
-      
       projectHelper.installAsciidoctor(project);
       MavenPluginFacet facet = project.getFacet(MavenPluginFacet.class);
-      MavenPlugin asciidoctorPlugin = facet.getPlugin(CoordinateBuilder.create("org.asciidoctor:asciidoctor-maven-plugin"));
+      MavenPlugin asciidoctorPlugin = facet.getPlugin(CoordinateBuilder
+               .create("org.asciidoctor:asciidoctor-maven-plugin"));
 
       assertTrue(project.hasFacet(AsciidoctorFacet.class));
       assertNotNull(asciidoctorPlugin);
-      
       assertNotNull(asciidoctorPlugin.getCoordinate().getVersion());
+      assertEquals(asciidoctorMavenPluginVersion, asciidoctorPlugin.getCoordinate().getVersion());
+   }
+
+   @Test
+   public void testAsciidoctorMPConfiguration() throws Exception
+   {
+      projectHelper.installAsciidoctor(project);
+      MavenPluginFacet facet = project.getFacet(MavenPluginFacet.class);
+
+      Converter html5Converter = new HTML5Converter();
+      html5Converter.setAttribute("toc", "left");
+      html5Converter.useAsciidoctorDiagram(false);
+      converterOps.setup("id-test", project, html5Converter, asciidoctorVersion);
+
+      MavenPlugin asciidoctorPlugin = facet.getPlugin(CoordinateBuilder.create("org.asciidoctor:asciidoctor-maven-plugin"));
+      assertEquals(1, asciidoctorPlugin.listExecutions().size());
+
+      // Check configuration
+      Configuration asciidoctorConfig = asciidoctorPlugin.listExecutions().get(0).getConfig();
+      assertEquals("html5",
+               asciidoctorConfig.getConfigurationElement("backend").getText());
+      assertEquals("left",
+               asciidoctorConfig.getConfigurationElement("attributes").getChildByName("toc").getText());
+
+   }
+
+   @Test
+   public void testAsciidoctorMPDependency() throws Exception
+   {
+      projectHelper.installAsciidoctor(project);
+      MavenPluginFacet facet = project.getFacet(MavenPluginFacet.class);
       
       Converter html5Converter = new HTML5Converter();
       html5Converter.setAttribute("toc", "left");
       html5Converter.useAsciidoctorDiagram(false);
       converterOps.setup("id-test", project, html5Converter, asciidoctorVersion);
-      
-      asciidoctorPlugin = facet.getPlugin(CoordinateBuilder.create("org.asciidoctor:asciidoctor-maven-plugin"));
-      assertEquals(1, asciidoctorPlugin.listExecutions().size());
-      
-      //Check configuration
-      Configuration asciidoctorConfig = asciidoctorPlugin.listExecutions().get(0).getConfig();
-      assertEquals("html5",
-    		  asciidoctorConfig.getConfigurationElement("backend").getText());
-      assertEquals("left",
-               asciidoctorConfig.getConfigurationElement("attributes").getChildByName("toc").getText());
-      
-      //Check asciidoctorj dependency
+
+      MavenPlugin asciidoctorPlugin = facet.getPlugin(CoordinateBuilder
+               .create("org.asciidoctor:asciidoctor-maven-plugin"));
+
+      // Check asciidoctorj dependency
       String adjVersion = "";
-      for (Dependency d : asciidoctorPlugin.getDirectDependencies()){
-         if ("asciidoctorj".equals(d.getCoordinate().getArtifactId())){
+      for (Dependency d : asciidoctorPlugin.getDirectDependencies())
+      {
+         if ("asciidoctorj".equals(d.getCoordinate().getArtifactId()))
+         {
             adjVersion = d.getCoordinate().getVersion();
             break;
          }
       }
-      assertEquals(asciidoctorVersion,adjVersion);
-    
+      assertEquals(asciidoctorVersion, adjVersion);
    }
 
 }
