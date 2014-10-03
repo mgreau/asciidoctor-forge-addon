@@ -1,5 +1,9 @@
 package org.jboss.forge.addon.asciidoctor.attributes;
 
+/**
+ * 
+ * @author <a href="mailto:greaumaxime@gmail.com">Maxime Gréau</a>
+ */
 public class Attribute
 {
    private String name;
@@ -69,7 +73,4 @@ public class Attribute
          return false;
       return true;
    }
-   
-   
-
 }

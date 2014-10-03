@@ -9,6 +9,10 @@ import org.jboss.forge.addon.ui.metadata.UICommandMetadata;
 import org.jboss.forge.addon.ui.util.Categories;
 import org.jboss.forge.addon.ui.util.Metadata;
 
+/**
+ * 
+ * @author <a href="mailto:greaumaxime@gmail.com">Maxime Gréau</a>
+ */
 public abstract class AbstractAsciidoctorCommand extends AbstractProjectCommand
 {
    @Inject

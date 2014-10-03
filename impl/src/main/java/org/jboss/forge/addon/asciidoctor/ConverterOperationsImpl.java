@@ -6,9 +6,11 @@ import javax.inject.Inject;
 
 import org.jboss.forge.addon.asciidoctor.converters.HTML5Converter;
 import org.jboss.forge.addon.asciidoctor.converters.PDFConverter;
+import org.jboss.forge.addon.asciidoctor.facets.AsciidoctorFacet;
 import org.jboss.forge.addon.asciidoctor.facets.AsciidoctorGemFacet;
 import org.jboss.forge.addon.dependencies.Coordinate;
 import org.jboss.forge.addon.dependencies.builder.CoordinateBuilder;
+import org.jboss.forge.addon.dependencies.builder.DependencyBuilder;
 import org.jboss.forge.addon.facets.FacetFactory;
 import org.jboss.forge.addon.maven.plugins.ConfigurationBuilder;
 import org.jboss.forge.addon.maven.plugins.ConfigurationElementBuilder;
@@ -18,6 +20,10 @@ import org.jboss.forge.addon.maven.plugins.MavenPluginBuilder;
 import org.jboss.forge.addon.maven.projects.MavenPluginFacet;
 import org.jboss.forge.addon.projects.Project;
 
+/**
+ * 
+ * @author <a href="mailto:greaumaxime@gmail.com">Maxime Gréau</a>
+ */
 public class ConverterOperationsImpl implements ConverterOperations
 {
    @Inject
@@ -51,13 +57,13 @@ public class ConverterOperationsImpl implements ConverterOperations
          }
 
          MavenPluginFacet facet = project.getFacet(MavenPluginFacet.class);
-         Coordinate asciidoctorCoordinate = createAsciidoctorCoordinate();
-         if (facet.hasPlugin(asciidoctorCoordinate))
+         Coordinate asciidoctorMPCoordinate = createAsciidoctorMavenPluginCoordinate();
+         if (facet.hasPlugin(asciidoctorMPCoordinate))
          {
-            MavenPlugin asciidoctorPlugin = facet.getPlugin(asciidoctorCoordinate);
+            MavenPlugin asciidoctorMavenPlugin = facet.getPlugin(asciidoctorMPCoordinate);
 
-            Coordinate asciidoctorCoordinateWithVersion = createAsciidoctorCoordinate().setVersion(asciidoctorVersion);
-            
+            Coordinate asciidoctorMPCoordinateWithVersion = createAsciidoctorMavenPluginCoordinate().setVersion("1.5.0");
+
             ConfigurationBuilder configuration = ConfigurationBuilder.create();
             for (Map.Entry<String, String> element : converter.getConfiguration().entrySet())
             {
@@ -83,9 +89,12 @@ public class ConverterOperationsImpl implements ConverterOperations
                      .addGoal("process-asciidoc")
                      .setConfig(configuration);
 
-            final MavenPlugin asciidoctorPluginUpdate = MavenPluginBuilder.create(asciidoctorPlugin).addExecution(
-                     execution).setCoordinate(asciidoctorCoordinateWithVersion);
-            facet.updatePlugin(asciidoctorPluginUpdate);
+            final MavenPlugin asciidoctorMPluginUpdate= MavenPluginBuilder.create(asciidoctorMavenPlugin).addExecution(
+                     execution).setCoordinate(asciidoctorMPCoordinateWithVersion)
+                     // add the asciidoctorj dependency to match with the asciidoctor version provided
+                     .addPluginDependency(createAsciidoctorJCoordinate(asciidoctorVersion));
+
+            facet.updatePlugin(asciidoctorMPluginUpdate);
 
             return true;
          }
@@ -94,8 +103,12 @@ public class ConverterOperationsImpl implements ConverterOperations
       return false;
    }
 
-
-   private CoordinateBuilder createAsciidoctorCoordinate()
+   private DependencyBuilder createAsciidoctorJCoordinate(String asciidoctorVersion)
+   {
+      return DependencyBuilder.create(AsciidoctorFacet.ASCIIDOCTORJ).setVersion(asciidoctorVersion);
+   }
+   
+   private CoordinateBuilder createAsciidoctorMavenPluginCoordinate()
    {
       return CoordinateBuilder.create()
                .setGroupId("org.asciidoctor")

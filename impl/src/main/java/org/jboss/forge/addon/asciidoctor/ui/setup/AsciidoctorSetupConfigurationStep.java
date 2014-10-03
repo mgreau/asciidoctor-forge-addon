@@ -23,6 +23,10 @@ import org.jboss.forge.addon.ui.result.Results;
 import org.jboss.forge.addon.ui.util.Metadata;
 import org.jboss.forge.addon.ui.wizard.UIWizardStep;
 
+/**
+ * 
+ * @author <a href="mailto:greaumaxime@gmail.com">Maxime Gréau</a>
+ */
 public class AsciidoctorSetupConfigurationStep extends AbstractAsciidoctorCommand implements UIWizardStep
 {
    @Inject
@@ -80,7 +84,7 @@ public class AsciidoctorSetupConfigurationStep extends AbstractAsciidoctorComman
       }
 
       converterOperations.setup(execId, project, converter, asciidoctorVersion);
-      return Results.success("Converter " + converter.getName() + " is configured - version " + asciidoctorVersion + " - (gem configured -> "
+      return Results.success("Converter " + converter.getName() + " is configured - Asciidoctor version " + asciidoctorVersion + " - (gem configured -> "
                + converter.isGemRequired() + ").");
    }
 

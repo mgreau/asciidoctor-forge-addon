@@ -2,6 +2,10 @@ package org.jboss.forge.addon.asciidoctor;
 
 import java.util.Map;
 
+/**
+ * 
+ * @author <a href="mailto:greaumaxime@gmail.com">Maxime Gréau</a>
+ */
 public interface Converter
 {
    public String getId();

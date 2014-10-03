@@ -34,14 +34,18 @@ import org.jboss.forge.addon.ui.result.Results;
 import org.jboss.forge.addon.ui.util.Metadata;
 import org.jboss.forge.furnace.services.Imported;
 
+/**
+ * 
+ * @author <a href="mailto:greaumaxime@gmail.com">Maxime Gréau</a>
+ */
 public class AsciidoctorSetupWizardImpl extends AbstractAsciidoctorCommand implements AsciidoctorSetupWizard
 {
    @Inject
-   @WithAttributes(shortName = 'v', label = "Asciidoctor version", required = true, defaultValue = "1.5.0")
+   @WithAttributes(shortName = 'v', label = "Asciidoctor version (AsciidoctorJ)", required = true, defaultValue = "1.5.1")
    private UIInput<String> asciidoctorVersion;
 
    @Inject
-   @WithAttributes(shortName = 'n', label = "AsciiDocFile", required = true, defaultValue = "manual.adoc")
+   @WithAttributes(shortName = 'n', label = "AsciiDoc file name", required = true, defaultValue = "manual.adoc")
    private UIInput<String> asciiDocFile;
 
    @Inject

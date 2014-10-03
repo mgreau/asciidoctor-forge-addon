@@ -7,6 +7,10 @@ import org.jboss.forge.addon.asciidoctor.Converter;
 
 import static java.util.Collections.unmodifiableMap;
 
+/**
+ * 
+ * @author <a href="mailto:greaumaxime@gmail.com">Maxime Gréau</a>
+ */
 public abstract class AbstractConverter implements Converter
 {
    protected final Map<String, String> attributes =  new HashMap<String, String>();

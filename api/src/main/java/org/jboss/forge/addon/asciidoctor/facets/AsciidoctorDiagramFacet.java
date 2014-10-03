@@ -4,6 +4,10 @@ import org.jboss.forge.addon.dependencies.Dependency;
 import org.jboss.forge.addon.dependencies.builder.CoordinateBuilder;
 import org.jboss.forge.addon.dependencies.builder.DependencyBuilder;
 
+/**
+ * 
+ * @author <a href="mailto:greaumaxime@gmail.com">Maxime Gréau</a>
+ */
 public interface AsciidoctorDiagramFacet extends AsciidoctorGemFacet
 {
    public static final Dependency ASCIIDOCTOR_DIAGRAM =

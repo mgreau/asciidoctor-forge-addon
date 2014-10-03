@@ -3,6 +3,8 @@ package org.jboss.forge.addon.asciidoctor.attributes;
 import org.jboss.forge.addon.convert.Converter;
 
 /**
+ * 
+ * @author <a href="mailto:greaumaxime@gmail.com">Maxime Gréau</a>
  */
 public class AttributeConverter implements Converter<String, Attribute>
 {

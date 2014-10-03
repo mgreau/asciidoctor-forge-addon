@@ -10,6 +10,7 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.forge.addon.asciidoctor.converters.HTML5Converter;
 import org.jboss.forge.addon.asciidoctor.facets.AsciidoctorFacet;
+import org.jboss.forge.addon.dependencies.Dependency;
 import org.jboss.forge.addon.dependencies.builder.CoordinateBuilder;
 import org.jboss.forge.addon.facets.FacetFactory;
 import org.jboss.forge.addon.maven.plugins.Configuration;
@@ -66,6 +67,9 @@ public class AsciidoctorFacetTest
    @Test
    public void testAsciidoctorInstallation() throws Exception
    {
+      final String asciidoctorVersion = "1.6.0";
+      final String asciidoctorMavenPluginVersion = "1.5.0";
+      
       projectHelper.installAsciidoctor(project);
       MavenPluginFacet facet = project.getFacet(MavenPluginFacet.class);
       MavenPlugin asciidoctorPlugin = facet.getPlugin(CoordinateBuilder.create("org.asciidoctor:asciidoctor-maven-plugin"));
@@ -78,15 +82,27 @@ public class AsciidoctorFacetTest
       Converter html5Converter = new HTML5Converter();
       html5Converter.setAttribute("toc", "left");
       html5Converter.useAsciidoctorDiagram(false);
-      converterOps.setup("id-test", project, html5Converter, "1.5.0");
+      converterOps.setup("id-test", project, html5Converter, asciidoctorVersion);
       
       asciidoctorPlugin = facet.getPlugin(CoordinateBuilder.create("org.asciidoctor:asciidoctor-maven-plugin"));
       assertEquals(1, asciidoctorPlugin.listExecutions().size());
+      
+      //Check configuration
       Configuration asciidoctorConfig = asciidoctorPlugin.listExecutions().get(0).getConfig();
       assertEquals("html5",
     		  asciidoctorConfig.getConfigurationElement("backend").getText());
       assertEquals("left",
                asciidoctorConfig.getConfigurationElement("attributes").getChildByName("toc").getText());
+      
+      //Check asciidoctorj dependency
+      String adjVersion = "";
+      for (Dependency d : asciidoctorPlugin.getDirectDependencies()){
+         if ("asciidoctorj".equals(d.getCoordinate().getArtifactId())){
+            adjVersion = d.getCoordinate().getVersion();
+            break;
+         }
+      }
+      assertEquals(asciidoctorVersion,adjVersion);
     
    }
 

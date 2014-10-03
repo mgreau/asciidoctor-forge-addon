@@ -1,6 +1,10 @@
 package org.jboss.forge.addon.asciidoctor.converters;
 
 
+/**
+ * 
+ * @author <a href="mailto:greaumaxime@gmail.com">Maxime Gréau</a>
+ */
 public class HTML5Converter extends AbstractConverter
 {
    @Override
