@@ -55,6 +55,7 @@ public class AsciidoctorFacetTest
    @Inject
    private ProjectHelper projectHelper;
 
+   @Inject
    private ConverterOperations converterOps;
 
    private String asciidoctorVersion;
