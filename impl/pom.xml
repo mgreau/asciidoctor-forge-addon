@@ -12,7 +12,7 @@
   	<dependency>
   		<groupId>org.asciidoctor</groupId>
   		<artifactId>asciidoctorj</artifactId>
-  		<version>1.5.1</version>
+  		<version>${asciidoctorj.version}</version>
   	</dependency>
     <dependency>
       <groupId>org.jboss.forge.furnace.container</groupId>

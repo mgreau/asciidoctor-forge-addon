@@ -41,5 +41,16 @@
       <artifactId>asciidoctor-forge-addon-impl</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+    	<groupId>org.jboss.forge.addon</groupId>
+    	<artifactId>shell-test-harness</artifactId>
+    	<version>${version.furnace}</version>
+    </dependency>
+    <dependency>
+  		<groupId>org.asciidoctor</groupId>
+  		<artifactId>asciidoctorj</artifactId>
+  		<version>${asciidoctorj.version}</version>
+  		<scope>test</scope>
+  	</dependency>
   </dependencies>
 </project>
