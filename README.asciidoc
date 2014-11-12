@@ -7,7 +7,7 @@ This addon *exports services* for use in other addons.
 This addon *provides classes* for use in other addons. 
 This addon is a 'Furnace container' that provides *lifecycle* and *service registry* support for dependent addons.
         
-=== Dependencies: None (or)
+=== Dependencies: todo
 === Depends on
 [options="header"]
 |===
